@@ -1,0 +1,72 @@
+package com.platform.dentify.patientattention.domain.model.aggregates;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.platform.dentify.iam.domain.model.aggregates.User;
+import com.platform.dentify.patientattention.domain.model.commands.CreatePatientCommand;
+import com.platform.dentify.patientattention.domain.model.valueobjects.*;
+import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+
+@Entity
+@Getter
+@Setter
+public class Patient extends AuditableAbstractAggregateRoot<Patient> {
+
+    @Embedded
+    private Dni dni;
+
+    @Embedded
+    private PersonName name;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "address", column = @Column(name = "email"))})
+    private EmailAddress email;
+
+    private Long age;
+
+    @Embedded
+    private Birthday birthday;
+
+    @Embedded
+    private HomeAddress homeAddress;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> medicalHistories;
+
+    public Patient() {}
+
+    public Patient (CreatePatientCommand command) {
+        this.dni = new Dni(command.dni());
+        this.name = new PersonName(command.firstName(), command.firstName());
+        this.email = new EmailAddress(command.email());
+        this.age = command.age();
+        this.birthday = new Birthday(command.birthday());
+        this.homeAddress = new HomeAddress(command.homeAddress());
+
+
+    }
+
+
+
+
+
+
+
+
+
+}
