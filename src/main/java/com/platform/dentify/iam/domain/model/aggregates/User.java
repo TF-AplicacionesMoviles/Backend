@@ -49,6 +49,7 @@ public class User extends AuditableAbstractAggregateRoot<User> implements UserDe
 
     public User(){}
 
+
     public User(String username, String password, PersonName name, EmailAddress email, String companyName, Boolean trial) {
         this.username = username;
         this.password = password;

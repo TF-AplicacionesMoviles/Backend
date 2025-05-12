@@ -33,8 +33,8 @@ public class AuthCommandServiceImpl implements AuthCommandService {
             throw new BadCredentialsException("Credenciales inválidas");
         }
 
-        String accessToken = jwtService.generateAccessToken(user.getUsername());
-        String refreshToken = jwtService.generateRefreshToken(user.getUsername());
+        String accessToken = jwtService.generateAccessToken(String.valueOf(user.getId()));
+        String refreshToken = jwtService.generateRefreshToken(String.valueOf(user.getId()));
 
         return new AuthResponseResource(accessToken, refreshToken);
     }
@@ -54,8 +54,8 @@ public class AuthCommandServiceImpl implements AuthCommandService {
             throw new IllegalArgumentException("un error ha ocurrido mientras se guarda el usuario" + e.getMessage());
         }
 
-        String accessToken = jwtService.generateAccessToken(user.getUsername());
-        String refreshToken = jwtService.generateRefreshToken(user.getUsername());
+        String accessToken = jwtService.generateAccessToken(String.valueOf(user.getId()));
+        String refreshToken = jwtService.generateRefreshToken(String.valueOf(user.getId()));
 
         return new RegisterResponseResource(accessToken, refreshToken, user.getUsername());
     }

@@ -18,10 +18,18 @@ import java.util.Date;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    @Value("${security.jwt.secret}")
+    private String secretKey;
+
+    private final SecretKey key;
 
     private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; // 15 mins
     private final long REFRESH_TOKEN_EXPIRATION = 1000L * 60 * 60 * 24 * 7; // 7 días
+
+    public JwtServiceImpl(@Value("${security.jwt.secret}") String secretKey) {
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
     @Override
     public String generateAccessToken(String userId) {
         return Jwts.builder()
