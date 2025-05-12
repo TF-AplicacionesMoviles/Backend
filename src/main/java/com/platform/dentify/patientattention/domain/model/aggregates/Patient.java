@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 
@@ -30,8 +32,6 @@ public class Patient extends AuditableAbstractAggregateRoot<Patient> {
             @AttributeOverride(name = "address", column = @Column(name = "email"))})
     private EmailAddress email;
 
-    private Long age;
-
     @Embedded
     private Birthday birthday;
 
@@ -50,14 +50,16 @@ public class Patient extends AuditableAbstractAggregateRoot<Patient> {
 
     public Patient() {}
 
+    public int GetAge(){
+        return Period.between(birthday.birthday(), LocalDate.now()).getYears();
+    }
+
     public Patient (CreatePatientCommand command) {
         this.dni = new Dni(command.dni());
         this.name = new PersonName(command.firstName(), command.firstName());
         this.email = new EmailAddress(command.email());
-        this.age = command.age();
         this.birthday = new Birthday(command.birthday());
         this.homeAddress = new HomeAddress(command.homeAddress());
-
 
     }
 
