@@ -3,6 +3,7 @@ package com.platform.dentify.iam.domain.model.aggregates;
 import com.platform.dentify.iam.domain.model.commands.SignUpCommand;
 import com.platform.dentify.iam.domain.model.valueobjects.EmailAddress;
 import com.platform.dentify.iam.domain.model.valueobjects.PersonName;
+import com.platform.dentify.inventory.domain.model.aggregates.Item;
 import com.platform.dentify.patientattention.domain.model.aggregates.Appointment;
 import com.platform.dentify.patientattention.domain.model.aggregates.Patient;
 import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -46,6 +47,8 @@ public class User extends AuditableAbstractAggregateRoot<User> implements UserDe
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Patient> patients;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> items;
 
     public User(){}
 

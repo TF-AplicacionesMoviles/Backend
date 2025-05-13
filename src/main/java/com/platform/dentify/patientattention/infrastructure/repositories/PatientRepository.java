@@ -11,5 +11,4 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     List<Patient> findAllByUser_Id(Long userId);
     //Name_FirstName → esto le indica a Spring Data JPA que navegue dentro del embebido name
     boolean existsByName_FirstNameAndName_LastNameAndUser_Id(String firstName, String lastName, Long userId);
-
 }

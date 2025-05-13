@@ -1,4 +1,4 @@
 package com.platform.dentify.patientattention.domain.model.queries;
 
-public record GetAllPatientsByUserId(Long id) {
+public record GetAllPatientsByUserId() {
 }

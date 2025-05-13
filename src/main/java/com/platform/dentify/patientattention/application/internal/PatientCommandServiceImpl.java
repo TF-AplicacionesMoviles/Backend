@@ -5,6 +5,8 @@ import com.platform.dentify.iam.infrastructure.repositories.UserRepository;
 import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
 import com.platform.dentify.patientattention.domain.model.aggregates.Patient;
 import com.platform.dentify.patientattention.domain.model.commands.CreatePatientCommand;
+import com.platform.dentify.patientattention.domain.model.commands.DeletePatientCommand;
+import com.platform.dentify.patientattention.domain.model.commands.UpdatePatientCommand;
 import com.platform.dentify.patientattention.domain.services.PatientCommandService;
 import com.platform.dentify.patientattention.infrastructure.repositories.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,6 +48,40 @@ public class PatientCommandServiceImpl implements PatientCommandService {
         }
 
         return patient.getId();
+
+    }
+
+    @Override
+    public void handle(DeletePatientCommand command) {
+        var patient = patientRepository.findById(command.id());
+
+        if(patient.isEmpty()) {
+            throw new IllegalArgumentException("Patient not found");
+        }
+
+        try {
+            patientRepository.deleteById(patient.get().getId());
+        } catch(RuntimeException e) {
+            throw new IllegalArgumentException("An error occurred while deleting patient" + e.getMessage());
+        }
+    }
+
+    @Override
+    public Optional<Patient> handle(UpdatePatientCommand command) {
+        var patient = patientRepository.findById(command.id());
+
+        if(patient.isEmpty()) {
+            throw new IllegalArgumentException("Patient not found");
+        }
+
+        patient.get().update(command);
+
+        try {
+            var updatedPatient = patientRepository.save(patient.get());
+            return Optional.of(updatedPatient);
+        } catch(RuntimeException e) {
+            throw new IllegalArgumentException("An error occurred while updating patient" + e.getMessage());
+        }
 
     }
 }
