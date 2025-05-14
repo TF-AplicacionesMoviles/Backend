@@ -10,6 +10,7 @@ import com.platform.dentify.patientattention.domain.model.commands.UpdatePatient
 import com.platform.dentify.patientattention.domain.services.PatientCommandService;
 import com.platform.dentify.patientattention.infrastructure.repositories.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -52,15 +53,17 @@ public class PatientCommandServiceImpl implements PatientCommandService {
     }
 
     @Override
+    @Transactional
     public void handle(DeletePatientCommand command) {
-        var patient = patientRepository.findById(command.id());
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        var patient = patientRepository.findByIdAndUser_Id(command.id(), userId);
 
         if(patient.isEmpty()) {
             throw new IllegalArgumentException("Patient not found");
         }
 
         try {
-            patientRepository.deleteById(patient.get().getId());
+            patientRepository.deleteByIdAndUser_Id(patient.get().getId(), userId);
         } catch(RuntimeException e) {
             throw new IllegalArgumentException("An error occurred while deleting patient" + e.getMessage());
         }
