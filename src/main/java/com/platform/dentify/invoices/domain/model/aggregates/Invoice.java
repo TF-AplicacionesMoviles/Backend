@@ -6,6 +6,7 @@ import com.platform.dentify.patientattention.domain.model.aggregates.Appointment
 import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,7 @@ import lombok.Setter;
 @Setter
 public class Invoice extends AuditableAbstractAggregateRoot<Invoice> {
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private Double amount;
 

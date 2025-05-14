@@ -37,8 +37,9 @@ public class AppointmentCommandServiceImpl implements AppointmentCommandService 
             appointmentRepository.save(appointment);
             System.out.println("Cita guardada con ID: " + appointment.getId());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to save appointment " + command._reason() + " " + command._patientId(), e);
-        }
+            System.out.println("Error al guardar la cita: " + e.getMessage());
+            e.printStackTrace();
+            throw e;        }
 
         return appointment.getId();
     }

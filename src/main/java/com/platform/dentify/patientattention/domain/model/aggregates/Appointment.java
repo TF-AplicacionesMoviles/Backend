@@ -23,7 +23,6 @@ import java.util.Date;
 @Setter
 public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
 
-    @NotBlank
     @Column(nullable = false)
     private Date appointmentDate;
 
