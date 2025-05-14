@@ -71,7 +71,8 @@ public class PatientCommandServiceImpl implements PatientCommandService {
 
     @Override
     public Optional<Patient> handle(UpdatePatientCommand command) {
-        var patient = patientRepository.findById(command.id());
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        var patient = patientRepository.findByIdAndUser_Id(command.id(), userId);
 
         if(patient.isEmpty()) {
             throw new IllegalArgumentException("Patient not found");
