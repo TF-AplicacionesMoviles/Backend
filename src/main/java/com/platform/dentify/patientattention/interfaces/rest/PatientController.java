@@ -93,7 +93,7 @@ public class PatientController {
             @ApiResponse(responseCode = "404", description = "No patients found")
     })
     public ResponseEntity<List<PatientResource>> getAllPatientsByUserId() {
-        var patients = patientQueryService.handle(new GetAllPatientsByUserId());
+        var patients = patientQueryService.handle();
 
         if (patients.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -24,13 +24,15 @@ public class PatientQueryServiceImpl implements PatientQueryService {
     }
 
     @Override
-    public List<Patient> handle(GetAllPatientsByUserId query) {
+    public List<Patient> handle() {
         Long userId = authenticatedUserProvider.getCurrentUserId();
         return patientRepository.findAllByUser_Id(userId);
     }
 
     @Override
     public Optional<Patient> handle(GetPatientByIdQuery query) {
-        return patientRepository.findById(query.id());
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        return patientRepository.findByIdAndUser_Id(query.id(), userId );
+
     }
 }

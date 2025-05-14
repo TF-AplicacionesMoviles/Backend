@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PatientQueryService {
 
-    List<Patient> handle(GetAllPatientsByUserId query);
 
+    List<Patient> handle();
     Optional<Patient> handle(GetPatientByIdQuery query);
 }
