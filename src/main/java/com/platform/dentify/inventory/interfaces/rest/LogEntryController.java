@@ -63,25 +63,25 @@ public class LogEntryController {
 
 
 
-//    @GetMapping
-//    @Operation(summary = "Get all log entries by user ID", description = "Get all log entries by user ID")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Log entries found"),
-//            @ApiResponse(responseCode = "404", description = "Log entries not found")
-//    })
-//    public ResponseEntity<List<LogEntryResource>> getAllLogEntries() {
-//        var logEntries = logEntryQueryService.handle(new GetAllLogEntriesByUserIdQuery());
-//
-//        if (logEntries.isEmpty()) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        var resources = logEntries.stream()
-//                .map(LogEntryResourceFromEntityAssembler:: toResourceFromEntity)
-//                .toList();
-//
-//        return ResponseEntity.ok(resources);
-//    }
+    @GetMapping
+    @Operation(summary = "Get all log entries by user ID", description = "Get all log entries by user ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Log entries found"),
+            @ApiResponse(responseCode = "404", description = "Log entries not found")
+    })
+    public ResponseEntity<List<LogEntryResource>> getAllLogEntries() {
+        var logEntries = logEntryQueryService.handle(new GetAllLogEntriesByUserIdQuery());
+
+        if (logEntries.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var resources = logEntries.stream()
+                .map(LogEntryResourceFromEntityAssembler:: toResourceFromEntity)
+                .toList();
+
+        return ResponseEntity.ok(resources);
+    }
 
 
 }

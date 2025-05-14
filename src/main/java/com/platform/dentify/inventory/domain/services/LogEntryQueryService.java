@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface LogEntryQueryService {
 
-//    List<LogEntry> handle(GetAllLogEntriesByUserIdQuery query);
+    List<LogEntry> handle(GetAllLogEntriesByUserIdQuery query);
 
     Optional<LogEntry> handle(GetLogEntryByIdQuery query);
 }

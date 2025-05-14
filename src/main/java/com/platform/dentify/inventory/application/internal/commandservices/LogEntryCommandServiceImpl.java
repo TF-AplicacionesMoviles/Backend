@@ -1,5 +1,6 @@
 package com.platform.dentify.inventory.application.internal.commandservices;
 
+import com.platform.dentify.inventory.application.internal.outboundservices.acl.ExternalInvoiceService;
 import com.platform.dentify.inventory.domain.model.aggregates.LogEntry;
 import com.platform.dentify.inventory.domain.model.commands.CreateLogEntryCommand;
 import com.platform.dentify.inventory.domain.model.commands.UpdateItemCommand;
@@ -15,13 +16,16 @@ public class LogEntryCommandServiceImpl implements LogEntryCommandService {
     private final LogEntryRepository logEntryRepository;
     private final ItemRepository itemRepository;
     private final ItemCommandService itemCommandService;
+    private final ExternalInvoiceService externalInvoiceService;
 
     public LogEntryCommandServiceImpl(LogEntryRepository logEntryRepository,
                                       ItemRepository itemRepository,
-                                      ItemCommandService itemCommandService) {
+                                      ItemCommandService itemCommandService,
+                                      ExternalInvoiceService externalInvoiceService) {
         this.logEntryRepository = logEntryRepository;
         this.itemRepository = itemRepository;
         this.itemCommandService = itemCommandService;
+        this.externalInvoiceService = externalInvoiceService;
     }
 
     @Override
@@ -32,16 +36,16 @@ public class LogEntryCommandServiceImpl implements LogEntryCommandService {
             throw new IllegalArgumentException("Item not found");
         }
 
-//        var invoice = fetchById(command.invoiceId());
-//
-//        if(invoice.isEmpty()) {
-//            throw new IllegalArgumentException("Invoice not found");
-//        }
+        var invoice = externalInvoiceService.fetchInvoiceById(command.invoiceId());
+
+        if(invoice.isEmpty()) {
+            throw new IllegalArgumentException("Invoice not found");
+        }
 
         var logEntry = new LogEntry(command);
 
         logEntry.setItem(item.get());
-//        logEntry.setInvoice(invoice.get());
+        logEntry.setInvoice(invoice.get());
 
         if(command.consumedQuantity() > item.get().getStockQuantity()) {
             throw new IllegalArgumentException("Quantity exceeded");

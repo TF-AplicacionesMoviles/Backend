@@ -15,6 +15,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 
 @Entity
@@ -24,7 +25,7 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
 
     @NotBlank
     @Column(nullable = false)
-    private LocalDateTime appointmentDate;
+    private Date appointmentDate;
 
     @Column(nullable = false)
     @Size(min = 1, max = 200)
@@ -41,14 +42,13 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    public Appointment(CreateAppointmentCommand command) {
-        appointmentDate = command._appointmentDate();
-        reason = command._reason();
-        completed = command._completed();
-        duration = command._duration();
-
-    }
-
     public Appointment(){}
 
+    public Appointment(CreateAppointmentCommand command) {
+        this.appointmentDate = command._appointmentDate();
+        this.reason = command._reason();
+        this.completed = command._completed();
+        this.duration = command._duration();
+
+    }
 }

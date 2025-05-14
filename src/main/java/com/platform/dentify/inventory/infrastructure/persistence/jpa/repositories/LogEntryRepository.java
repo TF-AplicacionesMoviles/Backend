@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface LogEntryRepository extends JpaRepository<LogEntry, Long> {
 
-//    List<LogEntry> findAllByInvoice_User_Id(Long userId);
+    List<LogEntry> findAllByInvoice_User_Id(Long userId);
 }

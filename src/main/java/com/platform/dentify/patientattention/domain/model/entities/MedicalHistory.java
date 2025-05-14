@@ -34,8 +34,5 @@ public class MedicalHistory extends AuditableModel {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    MedicalHistory(){}
-
-
-
+    public MedicalHistory() {}
 }

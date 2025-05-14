@@ -24,11 +24,11 @@ public class LogEntryQueryServiceImpl implements LogEntryQueryService {
         this.authenticatedUserProvider = authenticatedUserProvider;
     }
 
-//    @Override
-//    public List<LogEntry> handle(GetAllLogEntriesByUserIdQuery query) {
-//        Long userId = authenticatedUserProvider.getCurrentUserId();
-//        return logEntryRepository.findAllByInvoice_User_Id(userId);
-//    }
+    @Override
+    public List<LogEntry> handle(GetAllLogEntriesByUserIdQuery query) {
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        return logEntryRepository.findAllByInvoice_User_Id(userId);
+    }
 
     @Override
     public Optional<LogEntry> handle(GetLogEntryByIdQuery query) {
