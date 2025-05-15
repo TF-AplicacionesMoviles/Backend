@@ -83,7 +83,8 @@ public class ItemCommandServiceImpl implements ItemCommandService {
 
     @Override
     public void handle(DeleteItemCommand command) {
-        var item = itemRepository.findById(command.id());
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        var item = itemRepository.findByIdAndUser_Id(command.id(), userId );
 
         if(item.isEmpty()) {
             throw new IllegalArgumentException("Item not found");
