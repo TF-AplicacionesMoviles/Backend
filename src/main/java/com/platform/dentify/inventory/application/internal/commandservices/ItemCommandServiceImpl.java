@@ -34,7 +34,7 @@ public class ItemCommandServiceImpl implements ItemCommandService {
     public Long handle(CreateItemCommand command) {
         Long userId = authenticatedUserProvider.getCurrentUserId();
 
-        if(itemRepository.existsByName(command.name())) {
+        if(itemRepository.existsByNameAndUser_Id(command.name(), userId)) {
             throw new IllegalArgumentException("Item name already exists");
         }
 
