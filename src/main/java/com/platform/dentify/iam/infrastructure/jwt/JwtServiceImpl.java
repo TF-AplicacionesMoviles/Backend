@@ -1,25 +1,18 @@
 package com.platform.dentify.iam.infrastructure.jwt;
 
-
 import com.platform.dentify.iam.domain.services.JwtService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.security.Keys;
-
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-
-
 import java.util.Date;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-
-    @Value("${security.jwt.secret}")
-    private String secretKey;
 
     private final SecretKey key;
 
@@ -58,7 +51,6 @@ public class JwtServiceImpl implements JwtService {
         } catch (Exception e) {
             return false;
         }
-
     }
 
     @Override
