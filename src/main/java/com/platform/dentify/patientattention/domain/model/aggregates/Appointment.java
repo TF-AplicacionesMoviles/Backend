@@ -3,10 +3,7 @@ package com.platform.dentify.patientattention.domain.model.aggregates;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.platform.dentify.patientattention.domain.model.commands.CreateAppointmentCommand;
 import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,8 +31,8 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime duration;
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_appointment_patient"))
     private Patient patient;
 
     public Appointment(CreateAppointmentCommand command) {
