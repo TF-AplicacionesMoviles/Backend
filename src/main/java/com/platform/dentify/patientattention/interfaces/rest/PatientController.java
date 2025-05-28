@@ -43,8 +43,8 @@ public class PatientController {
     @PostMapping
     @Operation(summary = "Create a patient", description = "Create a new patient")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Partition created"),
-            @ApiResponse(responseCode = "400", description = "Partition not created")
+            @ApiResponse(responseCode = "201", description = "Patient created"),
+            @ApiResponse(responseCode = "400", description = "Patient not created")
     })
     public ResponseEntity<?> createPatient(@RequestBody CreatePatientResource resource) {
         try {
