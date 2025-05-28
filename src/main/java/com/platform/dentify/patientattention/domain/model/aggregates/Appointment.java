@@ -22,7 +22,6 @@ import java.time.LocalTime;
 @Setter
 public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
 
-    @NotBlank
     @Column(nullable = false)
     private LocalDateTime appointmentDate;
 
@@ -44,8 +43,9 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
     public Appointment(CreateAppointmentCommand command) {
         appointmentDate = command._appointmentDate();
         reason = command._reason();
-        completed = command._completed();
+        completed = false;
         duration = command._duration();
+
 
     }
 
