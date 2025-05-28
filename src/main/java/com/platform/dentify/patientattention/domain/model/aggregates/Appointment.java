@@ -1,14 +1,12 @@
 package com.platform.dentify.patientattention.domain.model.aggregates;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.platform.dentify.iam.domain.model.aggregates.User;
 import com.platform.dentify.patientattention.domain.model.commands.CreateAppointmentCommand;
 import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;

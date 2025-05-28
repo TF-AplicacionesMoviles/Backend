@@ -1,7 +1,5 @@
 package com.platform.dentify.patientattention.domain.model.commands;
 
-import com.platform.dentify.patientattention.domain.model.aggregates.Patient;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 

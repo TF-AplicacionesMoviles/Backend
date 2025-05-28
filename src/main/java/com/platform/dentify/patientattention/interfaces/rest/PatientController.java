@@ -4,7 +4,6 @@ package com.platform.dentify.patientattention.interfaces.rest;
 import com.platform.dentify.patientattention.domain.model.commands.CreatePatientCommand;
 import com.platform.dentify.patientattention.domain.model.commands.DeletePatientCommand;
 import com.platform.dentify.patientattention.domain.model.commands.UpdatePatientCommand;
-import com.platform.dentify.patientattention.domain.model.queries.GetAllPatientsByUserId;
 import com.platform.dentify.patientattention.domain.model.queries.GetPatientByIdQuery;
 import com.platform.dentify.patientattention.domain.services.PatientCommandService;
 import com.platform.dentify.patientattention.domain.services.PatientQueryService;
@@ -57,7 +56,7 @@ public class PatientController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
 
         } catch (Exception e) {
-            e.printStackTrace(); //traza completa (dev)
+            //e.printStackTrace(); //traza completa (dev)
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error: " + e.getMessage()));
         }
