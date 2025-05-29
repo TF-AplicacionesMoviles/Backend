@@ -1,13 +1,11 @@
 package com.platform.dentify.patientattention.domain.model.aggregates;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.platform.dentify.iam.domain.model.aggregates.User;
 import com.platform.dentify.patientattention.domain.model.commands.CreatePatientCommand;
+import com.platform.dentify.patientattention.domain.model.commands.UpdatePatientCommand;
 import com.platform.dentify.patientattention.domain.model.valueobjects.*;
 import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,13 +54,20 @@ public class Patient extends AuditableAbstractAggregateRoot<Patient> {
 
     public Patient (CreatePatientCommand command) {
         this.dni = new Dni(command.dni());
-        this.name = new PersonName(command.firstName(), command.firstName());
+        this.name = new PersonName(command.firstName(), command.lastName());
         this.email = new EmailAddress(command.email());
         this.birthday = new Birthday(command.birthday());
         this.homeAddress = new HomeAddress(command.homeAddress());
 
     }
 
+    public void update(UpdatePatientCommand command) {
+        this.dni = new Dni(command.dni());
+        this.name = new PersonName(command.firstName(), command.lastName());
+        this.email = new EmailAddress(command.email());
+        this.birthday = new Birthday(command.birthday());
+        this.homeAddress = new HomeAddress(command.homeAddress());
+    }
 
 
 
