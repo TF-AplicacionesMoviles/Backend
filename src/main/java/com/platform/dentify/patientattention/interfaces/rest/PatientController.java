@@ -1,18 +1,18 @@
 package com.platform.dentify.patientattention.interfaces.rest;
 
 
+import com.platform.dentify.patientattention.domain.model.commands.CreateMedicalHistoryCommand;
 import com.platform.dentify.patientattention.domain.model.commands.CreatePatientCommand;
 import com.platform.dentify.patientattention.domain.model.commands.DeletePatientCommand;
 import com.platform.dentify.patientattention.domain.model.commands.UpdatePatientCommand;
+import com.platform.dentify.patientattention.domain.model.queries.GetAllMedicalHistoriesByPatientAndUserIdQuery;
 import com.platform.dentify.patientattention.domain.model.queries.GetPatientByIdQuery;
+import com.platform.dentify.patientattention.domain.services.MedicalHistoryCommandService;
+import com.platform.dentify.patientattention.domain.services.MedicalHistoryQueryService;
 import com.platform.dentify.patientattention.domain.services.PatientCommandService;
 import com.platform.dentify.patientattention.domain.services.PatientQueryService;
-import com.platform.dentify.patientattention.interfaces.rest.assemblers.CreatePatientCommandFromResourceAssembler;
-import com.platform.dentify.patientattention.interfaces.rest.assemblers.PatientResourceFromEntityAssembler;
-import com.platform.dentify.patientattention.interfaces.rest.assemblers.UpdatePatientCommandFromResourceAssembler;
-import com.platform.dentify.patientattention.interfaces.rest.dtos.CreatePatientResource;
-import com.platform.dentify.patientattention.interfaces.rest.dtos.PatientResource;
-import com.platform.dentify.patientattention.interfaces.rest.dtos.UpdatePatientResource;
+import com.platform.dentify.patientattention.interfaces.rest.assemblers.*;
+import com.platform.dentify.patientattention.interfaces.rest.dtos.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -32,10 +32,15 @@ public class PatientController {
     private final PatientCommandService patientCommandService;
     private final PatientQueryService patientQueryService;
 
+    private final MedicalHistoryCommandService medicalHistoryCommandService;
+    private final MedicalHistoryQueryService medicalHistoryQueryService;
+
     public PatientController(PatientCommandService patientCommandService,
-                             PatientQueryService patientQueryService) {
+                             PatientQueryService patientQueryService, MedicalHistoryCommandService medicalHistoryCommandService, MedicalHistoryQueryService medicalHistoryQueryService) {
         this.patientCommandService = patientCommandService;
         this.patientQueryService = patientQueryService;
+        this.medicalHistoryCommandService = medicalHistoryCommandService;
+        this.medicalHistoryQueryService = medicalHistoryQueryService;
     }
 
 
@@ -143,4 +148,54 @@ public class PatientController {
 
         return ResponseEntity.ok(patientResource);
     }
+
+
+    @GetMapping("/{patientId}/medical-histories")
+    @Operation(summary = "Get medical histories by patient ID", description = "Returns all medical history records for a given patient")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Medical histories found"),
+            @ApiResponse(responseCode = "404", description = "No histories found for this patient")
+    })
+    public ResponseEntity<List<MedicalHistoryResource>> getMedicalHistories(@PathVariable Long patientId) {
+        var medicalHistories = medicalHistoryQueryService.handle(new GetAllMedicalHistoriesByPatientAndUserIdQuery(patientId));
+
+        if (medicalHistories.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        var resources = medicalHistories.stream().map(MedicalResourceFromEntityAssembler::toResourceFromEntity).toList();
+        return ResponseEntity.ok(resources);
+
+    }
+
+
+    @PostMapping("/{patientId}/medical-histories")
+    @Operation(summary = "Add a medical history to a patient", description = "Adds a medical history record to the specified patient")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Medical history created"),
+            @ApiResponse(responseCode = "400", description = "Invalid data")
+    })
+    public ResponseEntity<?> addMedicalHistory(
+            @PathVariable Long patientId,
+            @RequestBody CreateMedicalHistoryResource resource
+    ) {
+        try {
+            CreateMedicalHistoryCommand command = CreateMedicalHistoryCommandFromResourceAssembler.toCommandFromResource(patientId, resource);
+            var result = medicalHistoryCommandService.handle(command);
+
+            if (result.isEmpty()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to create medical history");
+            }
+
+            MedicalHistoryResource medicalHistoryResource = MedicalResourceFromEntityAssembler.toResourceFromEntity(result.get());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(medicalHistoryResource);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        }
+
+    }
+
 }
+
