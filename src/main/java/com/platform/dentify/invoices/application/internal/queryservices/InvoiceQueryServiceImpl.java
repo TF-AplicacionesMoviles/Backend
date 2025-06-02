@@ -16,7 +16,7 @@ public class InvoiceQueryServiceImpl implements InvoiceQueryService {
     private final AppointmentACL appointmentACL;
     private final InvoiceRepository invoiceRepository;
 
-    public InvoiceQueryServiceImpl(AuthenticatedUserProvider authenticatedUserProvider, AppointmentACL appointmentACL, InvoiceRepository invoiceRepository) {
+    public InvoiceQueryServiceImpl(AppointmentACL appointmentACL, InvoiceRepository invoiceRepository) {
         this.appointmentACL = appointmentACL;
         this.invoiceRepository = invoiceRepository;
     }
