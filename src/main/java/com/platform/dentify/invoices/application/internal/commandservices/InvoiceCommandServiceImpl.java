@@ -12,6 +12,7 @@ import com.platform.dentify.invoices.infrastructure.repositories.PaymentMethodRe
 import com.platform.dentify.patientattention.domain.model.aggregates.Appointment;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -37,39 +38,31 @@ public class InvoiceCommandServiceImpl implements InvoiceCommandService {
     @Override
     public Optional<Invoice> handle(CreateInvoiceCommand command) {
         Long userId = authenticatedUserProvider.getCurrentUserId();
-        var paymentMethod = paymentMethodRepository.findPaymentMethodById(command.paymentMethodId());
-
-        //validar y obtener el metodo de pago
-        if (paymentMethod.isEmpty()){
-            return Optional.empty();
-        }
+        PaymentMethod paymentMethod = paymentMethodRepository.findPaymentMethodById(command.paymentMethodId())
+                .orElseThrow(() -> new IllegalArgumentException("invalid payment method: " + command.paymentMethodId()));
 
         //validar si es que la cita a ligar, pertenece al usuario y a un paciente
-        Optional<ExternalAppointmentDTO> appointmentOpt = appointmentACL.findByIdAndUserId(command.appointmentId(), userId);
-
-        if (appointmentOpt.isEmpty()){
-            return Optional.empty();
+        if (!appointmentACL.findByIdAndUserId(command.appointmentId(), userId).isPresent()) {
+            throw new SecurityException("invalid access from user to the appointment Id: " + command.appointmentId());
         }
 
         //valida si ya existe un pago ligado a una cita
         if (invoiceRepository.findInvoiceByAppointmentId(command.appointmentId()).isPresent()){
-            return Optional.empty();
+            throw new IllegalStateException("invoice already exists");
         }
 
         //crea el pago
         Invoice invoice = new Invoice(command);
 
-        invoice.setPaymentMethod(paymentMethod.get());
+        invoice.setPaymentMethod(paymentMethod);
 
         Appointment appointmentProxy = entityManager.getReference(Appointment.class, command.appointmentId());
         invoice.setAppointment(appointmentProxy);
 
         try {
-            invoiceRepository.save(invoice);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Optional.of(invoiceRepository.save(invoice));
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Error saving invoice", ex);
         }
-
-        return Optional.of(invoice);
     }
 }
