@@ -13,12 +13,10 @@ import java.util.Optional;
 
 @Service
 public class InvoiceQueryServiceImpl implements InvoiceQueryService {
-    private final AuthenticatedUserProvider authenticatedUserProvider;
     private final AppointmentACL appointmentACL;
     private final InvoiceRepository invoiceRepository;
 
     public InvoiceQueryServiceImpl(AuthenticatedUserProvider authenticatedUserProvider, AppointmentACL appointmentACL, InvoiceRepository invoiceRepository) {
-        this.authenticatedUserProvider = authenticatedUserProvider;
         this.appointmentACL = appointmentACL;
         this.invoiceRepository = invoiceRepository;
     }
