@@ -2,7 +2,6 @@ package com.platform.dentify.invoices.application.internal.commandservices;
 
 import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
 import com.platform.dentify.invoices.application.external.AppointmentACL;
-import com.platform.dentify.invoices.application.external.ExternalAppointmentDTO;
 import com.platform.dentify.invoices.domain.model.aggregates.Invoice;
 import com.platform.dentify.invoices.domain.model.commands.CreateInvoiceCommand;
 import com.platform.dentify.invoices.domain.model.entities.PaymentMethod;

@@ -1,6 +1,4 @@
 package com.platform.dentify.invoices.application.internal.queryservices;
-
-import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
 import com.platform.dentify.invoices.application.external.AppointmentACL;
 import com.platform.dentify.invoices.application.external.ExternalAppointmentDTO;
 import com.platform.dentify.invoices.domain.model.aggregates.Invoice;
