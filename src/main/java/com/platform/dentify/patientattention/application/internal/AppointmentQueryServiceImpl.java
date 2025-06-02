@@ -3,12 +3,14 @@ package com.platform.dentify.patientattention.application.internal;
 import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
 import com.platform.dentify.patientattention.domain.model.aggregates.Appointment;
 import com.platform.dentify.patientattention.domain.model.queries.GetAllAppointmentsByPatientAndUserIdQuery;
+import com.platform.dentify.patientattention.domain.model.queries.GetAppointmentByIdQuery;
 import com.platform.dentify.patientattention.domain.services.AppointmentQueryService;
 import com.platform.dentify.patientattention.infrastructure.repositories.AppointmentRepository;
 import com.platform.dentify.patientattention.infrastructure.repositories.PatientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AppointmentQueryServiceImpl implements AppointmentQueryService {
@@ -34,5 +36,11 @@ public class AppointmentQueryServiceImpl implements AppointmentQueryService {
         }
 
         return appointmentRepository.findAllByPatientId(query.patientId());
+    }
+
+    @Override
+    public Optional<Appointment> handle(GetAppointmentByIdQuery query) {
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        return appointmentRepository.findByIdAndPatientUserId(query.appointmentId(), userId);
     }
 }

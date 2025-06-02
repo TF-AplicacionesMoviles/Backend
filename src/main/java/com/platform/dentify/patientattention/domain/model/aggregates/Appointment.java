@@ -2,6 +2,7 @@ package com.platform.dentify.patientattention.domain.model.aggregates;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.platform.dentify.patientattention.domain.model.commands.CreateAppointmentCommand;
+import com.platform.dentify.patientattention.domain.model.commands.UpdateAppointmentCommand;
 import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -45,5 +46,13 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
     }
 
     public Appointment(){}
+
+
+    public void update(UpdateAppointmentCommand command) {
+        this.appointmentDate = command.appointmentDate();
+        this.reason = command.reason();
+        this.completed = command.completed();
+        this.duration = command.duration();
+    }
 
 }

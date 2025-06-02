@@ -1,13 +1,11 @@
 package com.platform.dentify.patientattention.interfaces.rest;
 
-import com.platform.dentify.patientattention.domain.model.commands.CreateAppointmentCommand;
+import com.platform.dentify.patientattention.domain.model.commands.*;
 import com.platform.dentify.patientattention.domain.model.queries.GetAllAppointmentsByPatientAndUserIdQuery;
 import com.platform.dentify.patientattention.domain.services.AppointmentCommandService;
 import com.platform.dentify.patientattention.domain.services.AppointmentQueryService;
-import com.platform.dentify.patientattention.interfaces.rest.assemblers.AppointmentResourceFromEntityAssembler;
-import com.platform.dentify.patientattention.interfaces.rest.assemblers.CreateAppointmentCommandFromResourceAssembler;
-import com.platform.dentify.patientattention.interfaces.rest.dtos.AppointmentResource;
-import com.platform.dentify.patientattention.interfaces.rest.dtos.CreateAppointmentResource;
+import com.platform.dentify.patientattention.interfaces.rest.assemblers.*;
+import com.platform.dentify.patientattention.interfaces.rest.dtos.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -74,4 +72,40 @@ public class AppointmentController {
         }
     }
 
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update appointment", description = "Update appointment using the ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Updated appointment"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
+    })
+    public ResponseEntity<AppointmentResource> updateAppointment(@PathVariable Long id,
+                                                         @RequestBody UpdateAppointmentResource resource) {
+
+        UpdateAppointmentCommand command = UpdateAppointmentCommandFromResourceAssembler.toCommandFromResource(id, resource);
+        var appointment = appointmentCommandService.handle(command);
+
+        if(appointment.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        var appointmentResource = AppointmentResourceFromEntityAssembler.toResourceFromEntity(appointment.get());
+
+        return ResponseEntity.ok(appointmentResource);
+    }
+
+
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete an appointment",
+            description = "Delete an appointment using the ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Deleted appointment"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+    })
+    public ResponseEntity<?> deleteAppointment(@PathVariable Long id) {
+        appointmentCommandService.handle(new DeleteAppointmentCommand(id));
+        return ResponseEntity.noContent().build();
+    }
 }
