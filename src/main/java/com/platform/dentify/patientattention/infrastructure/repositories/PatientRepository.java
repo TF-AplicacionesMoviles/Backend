@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     List<Patient> findAllByUser_Id(Long userId);
     Optional<Patient> findByIdAndUser_Id(Long patientId, Long userId);
+    Optional<Patient> findByDni_DniAndUserId(String dni, Long userId);
     //Name_FirstName → esto le indica a Spring Data JPA que navegue dentro del embebido name
     boolean existsByName_FirstNameAndName_LastNameAndUser_Id(String firstName, String lastName, Long userId);
     void deleteByIdAndUser_Id(Long id, Long userId);

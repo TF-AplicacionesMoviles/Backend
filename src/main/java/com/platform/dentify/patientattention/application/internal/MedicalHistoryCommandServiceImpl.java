@@ -2,10 +2,12 @@ package com.platform.dentify.patientattention.application.internal;
 
 import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
 import com.platform.dentify.patientattention.domain.model.commands.CreateMedicalHistoryCommand;
+import com.platform.dentify.patientattention.domain.model.commands.DeleteMedicalHistoryCommand;
 import com.platform.dentify.patientattention.domain.model.entities.MedicalHistory;
 import com.platform.dentify.patientattention.domain.services.MedicalHistoryCommandService;
 import com.platform.dentify.patientattention.infrastructure.repositories.MedicalHistoryRepository;
 import com.platform.dentify.patientattention.infrastructure.repositories.PatientRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -44,5 +46,20 @@ public class MedicalHistoryCommandServiceImpl implements MedicalHistoryCommandSe
         }
 
         return Optional.of(medicalHistory);
+    }
+
+    @Override
+    @Transactional
+    public void handle(DeleteMedicalHistoryCommand command) {
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        var medical = medicalHistoryRepository.findByIdAndPatientIdAndPatientUserId(command.id(), command.patientId(), userId);
+        if (medical.isEmpty()){
+            throw new IllegalArgumentException("Medical history does not exist");
+        }
+        try {
+            medicalHistoryRepository.deleteByIdAndPatientIdAndPatientUserId(medical.get().getId(), medical.get().getPatient().getId(), userId);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException("An error occurred while deleting Medical History" + e.getMessage());
+        }
     }
 }

@@ -1,11 +1,9 @@
 package com.platform.dentify.patientattention.interfaces.rest;
 
 
-import com.platform.dentify.patientattention.domain.model.commands.CreateMedicalHistoryCommand;
-import com.platform.dentify.patientattention.domain.model.commands.CreatePatientCommand;
-import com.platform.dentify.patientattention.domain.model.commands.DeletePatientCommand;
-import com.platform.dentify.patientattention.domain.model.commands.UpdatePatientCommand;
+import com.platform.dentify.patientattention.domain.model.commands.*;
 import com.platform.dentify.patientattention.domain.model.queries.GetAllMedicalHistoriesByPatientAndUserIdQuery;
+import com.platform.dentify.patientattention.domain.model.queries.GetPatientByDniQuery;
 import com.platform.dentify.patientattention.domain.model.queries.GetPatientByIdQuery;
 import com.platform.dentify.patientattention.domain.services.MedicalHistoryCommandService;
 import com.platform.dentify.patientattention.domain.services.MedicalHistoryQueryService;
@@ -68,7 +66,20 @@ public class PatientController {
 
     }
 
-
+    @GetMapping("/dni/{dni}")
+    @Operation(summary = "Get patient by DNI", description = "Return a patient by DNI")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Patient found"),
+            @ApiResponse(responseCode = "404", description = "Patient not found")
+    })
+    public ResponseEntity<PatientResource> getPatientByDni(@PathVariable String dni) {
+        var patient = patientQueryService.handle(new GetPatientByDniQuery(dni));
+        if (patient.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        var resource = PatientResourceFromEntityAssembler.toResourceFromEntity(patient.get());
+        return ResponseEntity.status(HttpStatus.OK).body(resource);
+    }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get patient by ID", description = "Returns a patient by ID")
@@ -197,5 +208,25 @@ public class PatientController {
 
     }
 
+    @DeleteMapping("/{patientId}/medical-histories/{id}")
+    @Operation(
+            summary = "Delete a patient",
+            description = "Delete a patient using the ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Deleted patient"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+    })
+    public ResponseEntity<?> deleteMedicalHistories(@PathVariable Long id,
+                                                    @PathVariable Long patientId) {
+        try {
+            medicalHistoryCommandService.handle(new DeleteMedicalHistoryCommand(id, patientId));
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
+    }
 }
 

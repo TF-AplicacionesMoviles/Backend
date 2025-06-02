@@ -3,6 +3,7 @@ package com.platform.dentify.patientattention.application.internal;
 import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
 import com.platform.dentify.patientattention.domain.model.aggregates.Patient;
 import com.platform.dentify.patientattention.domain.model.queries.GetAllPatientsByUserId;
+import com.platform.dentify.patientattention.domain.model.queries.GetPatientByDniQuery;
 import com.platform.dentify.patientattention.domain.model.queries.GetPatientByIdQuery;
 import com.platform.dentify.patientattention.domain.services.PatientQueryService;
 import com.platform.dentify.patientattention.infrastructure.repositories.PatientRepository;
@@ -34,5 +35,11 @@ public class PatientQueryServiceImpl implements PatientQueryService {
         Long userId = authenticatedUserProvider.getCurrentUserId();
         return patientRepository.findByIdAndUser_Id(query.id(), userId );
 
+    }
+
+    @Override
+    public Optional<Patient> handle(GetPatientByDniQuery query) {
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        return patientRepository.findByDni_DniAndUserId(query.dni(), userId);
     }
 }

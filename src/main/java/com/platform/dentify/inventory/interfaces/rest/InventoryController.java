@@ -4,6 +4,7 @@ import com.platform.dentify.inventory.domain.model.commands.CreateItemCommand;
 import com.platform.dentify.inventory.domain.model.commands.DeleteItemCommand;
 import com.platform.dentify.inventory.domain.model.commands.UpdateItemCommand;
 import com.platform.dentify.inventory.domain.model.queries.GetAllItemsByUserIdQuery;
+import com.platform.dentify.inventory.domain.model.queries.GetItemByIdQuery;
 import com.platform.dentify.inventory.domain.services.ItemCommandService;
 import com.platform.dentify.inventory.domain.services.ItemQueryService;
 import com.platform.dentify.inventory.interfaces.rest.dtos.CreateItemResource;
@@ -116,5 +117,20 @@ public class InventoryController {
                 .toList();
 
         return ResponseEntity.ok(resources);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get item by Id", description = "Get an item by Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Item found"),
+            @ApiResponse(responseCode = "404", description = "Item not found")
+    })
+    public ResponseEntity<ItemResource> getItemById(@PathVariable Long id) {
+        var item = itemQueryService.handle(new GetItemByIdQuery(id));
+        if (item.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var resource = ItemResourceFromEntityAssembler.toResourceFromEntity(item.get());
+        return ResponseEntity.ok(resource);
     }
 }
