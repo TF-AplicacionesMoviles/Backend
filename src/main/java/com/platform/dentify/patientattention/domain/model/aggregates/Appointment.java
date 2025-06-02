@@ -1,6 +1,7 @@
 package com.platform.dentify.patientattention.domain.model.aggregates;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.platform.dentify.invoices.domain.model.aggregates.Invoice;
 import com.platform.dentify.patientattention.domain.model.commands.CreateAppointmentCommand;
 import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
@@ -34,6 +35,9 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
     @ManyToOne(optional = false)
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_appointment_patient"))
     private Patient patient;
+
+    @OneToOne(mappedBy = "appointment")
+    private Invoice invoice;
 
     public Appointment(CreateAppointmentCommand command) {
         appointmentDate = command._appointmentDate();
