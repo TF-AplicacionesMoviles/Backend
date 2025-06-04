@@ -32,6 +32,30 @@ public class AppointmentController {
         this.appointmentCommandService = appointmentCommandService;
     }
 
+    @GetMapping
+    @Operation(
+            summary = "Get all appointments of the authenticated user",
+            description = "Returns all appointments of all patients belonging to the current user, ordered by date descending"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Appointments retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No appointments found for the user")
+    })
+    public ResponseEntity<List<AppointmentResource>> getAllAppointmentsByUser() {
+        var appointments = appointmentQueryService.handle();
+
+        if (appointments.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        var resources = appointments.stream()
+                .map(AppointmentResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+
+        return ResponseEntity.ok(resources);
+    }
+
+
     @GetMapping("/{patientId}")
     @Operation(summary = "Get all appointments of patient from the authenticated user", description = "Returns all appointments linked to an specific patient from the current user")
     @ApiResponses(value = {

@@ -35,4 +35,11 @@ public class AppointmentQueryServiceImpl implements AppointmentQueryService {
 
         return appointmentRepository.findAllByPatientId(query.patientId());
     }
+
+    @Override
+    public List<Appointment> handle() {
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        return appointmentRepository.findAllByPatient_User_IdOrderByAppointmentDateDesc(userId);
+
+    }
 }

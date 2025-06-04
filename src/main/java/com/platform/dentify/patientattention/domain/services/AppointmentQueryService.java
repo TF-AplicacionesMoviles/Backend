@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface AppointmentQueryService {
     List<Appointment> handle(GetAllAppointmentsByPatientAndUserIdQuery query);
-    //Optional<Appointment> handle()
+    List<Appointment> handle();
 }
