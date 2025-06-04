@@ -4,10 +4,12 @@ import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvide
 import com.platform.dentify.patientattention.domain.model.aggregates.Appointment;
 import com.platform.dentify.patientattention.domain.model.aggregates.Patient;
 import com.platform.dentify.patientattention.domain.model.commands.CreateAppointmentCommand;
+import com.platform.dentify.patientattention.domain.model.commands.DeleteAppointmentCommand;
 import com.platform.dentify.patientattention.domain.model.commands.UpdateAppointmentCommand;
 import com.platform.dentify.patientattention.domain.services.AppointmentCommandService;
 import com.platform.dentify.patientattention.infrastructure.repositories.AppointmentRepository;
 import com.platform.dentify.patientattention.infrastructure.repositories.PatientRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -26,6 +28,7 @@ public class AppointmentCommandServiceImpl implements AppointmentCommandService 
     }
 
     @Override
+    @Transactional
     public Optional<Appointment> handle(CreateAppointmentCommand command) {
         Long userId = authenticatedUserProvider.getCurrentUserId();
         var patient = patientRepository.findByIdAndUser_Id(command.patientId(), userId);
@@ -47,6 +50,7 @@ public class AppointmentCommandServiceImpl implements AppointmentCommandService 
     }
 
     @Override
+    @Transactional
     public Optional<Appointment> handle(UpdateAppointmentCommand command) {
         Long userId = authenticatedUserProvider.getCurrentUserId();
 
@@ -62,6 +66,19 @@ public class AppointmentCommandServiceImpl implements AppointmentCommandService 
 
         return Optional.of(appointment);
 
+
+    }
+
+    @Override
+    @Transactional
+    public void handle(DeleteAppointmentCommand command) {
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        boolean exists = appointmentRepository.existsByIdAndPatient_User_Id(command.id(), userId);
+        if (!exists) {
+            throw new IllegalArgumentException("Appointment not found or does not belong to the user");
+        }
+
+        appointmentRepository.deleteById(command.id());
 
     }
 }
