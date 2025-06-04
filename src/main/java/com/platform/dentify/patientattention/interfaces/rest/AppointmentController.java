@@ -6,8 +6,10 @@ import com.platform.dentify.patientattention.domain.services.AppointmentCommandS
 import com.platform.dentify.patientattention.domain.services.AppointmentQueryService;
 import com.platform.dentify.patientattention.interfaces.rest.assemblers.AppointmentResourceFromEntityAssembler;
 import com.platform.dentify.patientattention.interfaces.rest.assemblers.CreateAppointmentCommandFromResourceAssembler;
+import com.platform.dentify.patientattention.interfaces.rest.assemblers.UpdateAppointmentCommandFromResourceAssembler;
 import com.platform.dentify.patientattention.interfaces.rest.dtos.AppointmentResource;
 import com.platform.dentify.patientattention.interfaces.rest.dtos.CreateAppointmentResource;
+import com.platform.dentify.patientattention.interfaces.rest.dtos.UpdateAppointmentResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -73,5 +75,33 @@ public class AppointmentController {
 
         }
     }
+
+    @PutMapping("/{appointmentId}")
+    @Operation(summary = "Update an existing appointment", description = "Updates the details of an appointment")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Appointment updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "Appointment not found")
+    })
+    public ResponseEntity<?> updateAppointment(
+            @PathVariable Long appointmentId,
+            @RequestBody UpdateAppointmentResource resource) {
+        try {
+            var command = UpdateAppointmentCommandFromResourceAssembler.toCommandFromResource(appointmentId, resource);
+            var result = appointmentCommandService.handle(command);
+
+            if (result.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment not found or does not belong to user");
+            }
+
+            AppointmentResource updatedResource = AppointmentResourceFromEntityAssembler.toResourceFromEntity(result.get());
+            return ResponseEntity.ok(updatedResource);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        }
+    }
+
+
 
 }
