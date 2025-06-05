@@ -3,6 +3,7 @@ package com.platform.dentify.patientattention.interfaces.rest;
 import com.platform.dentify.patientattention.domain.model.commands.CreateAppointmentCommand;
 import com.platform.dentify.patientattention.domain.model.commands.DeleteAppointmentCommand;
 import com.platform.dentify.patientattention.domain.model.queries.GetAllAppointmentsByPatientAndUserIdQuery;
+import com.platform.dentify.patientattention.domain.model.queries.GetAllAppointmentUserIdOrderByAppointmentDateDescQuery;
 import com.platform.dentify.patientattention.domain.services.AppointmentCommandService;
 import com.platform.dentify.patientattention.domain.services.AppointmentQueryService;
 import com.platform.dentify.patientattention.interfaces.rest.assemblers.AppointmentResourceFromEntityAssembler;
@@ -44,7 +45,7 @@ public class AppointmentController {
             @ApiResponse(responseCode = "404", description = "No appointments found for the user")
     })
     public ResponseEntity<List<AppointmentResource>> getAllAppointmentsByUser() {
-        var appointments = appointmentQueryService.handle();
+        var appointments = appointmentQueryService.handle(new GetAllAppointmentUserIdOrderByAppointmentDateDescQuery());
 
         if (appointments.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
