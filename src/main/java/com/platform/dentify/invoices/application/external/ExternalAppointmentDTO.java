@@ -11,5 +11,5 @@ public record ExternalAppointmentDTO(
         Boolean completed,
         LocalTime duration,
         Long patientId,
-        Date createdAt
+        LocalDateTime createdAt
 ) {}
