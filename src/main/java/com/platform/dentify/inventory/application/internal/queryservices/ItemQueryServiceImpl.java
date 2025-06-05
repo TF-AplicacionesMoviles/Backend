@@ -33,7 +33,7 @@ public class ItemQueryServiceImpl implements ItemQueryService {
     @Override
     public List<Item> handle(FindTop3LowStockItemsByCurrentUser query) {
 
-        return itemRepository.findTop3ByUser_IdOrderByStockQuantityAsc(query.userId());
+        return itemRepository.findTop3ByUser_IdAndStockQuantityLessThanOrderByStockQuantityAsc(query.userId(), 10);
 
     }
 

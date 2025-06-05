@@ -1,13 +1,13 @@
 package com.platform.dentify.dashboard.domain.services;
 
-import com.platform.dentify.inventory.domain.model.aggregates.Item;
-import com.platform.dentify.invoices.domain.model.aggregates.Invoice;
-import com.platform.dentify.patientattention.domain.model.aggregates.Appointment;
+import com.platform.dentify.dashboard.interfaces.dto.AppointmentDto;
+import com.platform.dentify.dashboard.interfaces.dto.InvoiceDto;
+import com.platform.dentify.dashboard.interfaces.dto.ItemDto;
 
 import java.util.List;
 
 public interface DashboardQueryService {
-    List<Item> getLowStockItemsForDashboard();
-    List<Invoice> getRecentPayments();
-    List<Appointment> getRecentAppointments();
+    List<ItemDto> getLowStockItemsForDashboard();
+    List<InvoiceDto> getRecentPayments();
+    List<AppointmentDto> getRecentAppointments();
 }

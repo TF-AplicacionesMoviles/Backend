@@ -13,6 +13,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     boolean existsByNameAndUser_Id(String name, Long userId);
     Optional<Item> findByIdAndUser_Id(Long id, Long userId);
-    List<Item> findTop3ByUser_IdOrderByStockQuantityAsc(Long userId);
+    List<Item> findTop3ByUser_IdAndStockQuantityLessThanOrderByStockQuantityAsc(Long userId, Integer quantity);
     List<Item> findAllByUser_Id(Long userId);
 }

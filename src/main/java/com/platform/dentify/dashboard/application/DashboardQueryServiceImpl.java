@@ -1,14 +1,14 @@
 package com.platform.dentify.dashboard.application;
 
 import com.platform.dentify.dashboard.domain.services.DashboardQueryService;
+import com.platform.dentify.dashboard.interfaces.dto.AppointmentDto;
+import com.platform.dentify.dashboard.interfaces.dto.InvoiceDto;
+import com.platform.dentify.dashboard.interfaces.dto.ItemDto;
 import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
-import com.platform.dentify.inventory.domain.model.aggregates.Item;
 import com.platform.dentify.inventory.domain.model.queries.FindTop3LowStockItemsByCurrentUser;
 import com.platform.dentify.inventory.domain.services.ItemQueryService;
-import com.platform.dentify.invoices.domain.model.aggregates.Invoice;
 import com.platform.dentify.invoices.domain.model.queries.GetLast5Invoices;
 import com.platform.dentify.invoices.domain.services.InvoiceQueryService;
-import com.platform.dentify.patientattention.domain.model.aggregates.Appointment;
 import com.platform.dentify.patientattention.domain.model.queries.GetTodayAppointmentsByUserIdQuery;
 import com.platform.dentify.patientattention.domain.services.AppointmentQueryService;
 import org.springframework.stereotype.Service;
@@ -31,21 +31,40 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     }
 
     @Override
-    public List<Item> getLowStockItemsForDashboard() {
+    public List<ItemDto> getLowStockItemsForDashboard() {
         Long userId = authenticatedUserProvider.getCurrentUserId();
-        return inventoryQueryService.handle(new FindTop3LowStockItemsByCurrentUser(userId));
+        return inventoryQueryService.handle(new FindTop3LowStockItemsByCurrentUser(userId))
+                .stream()
+                .map(item -> new ItemDto(item.getId(), item.getName(), item.getStockQuantity()))
+                .toList();
     }
 
     @Override
-    public List<Invoice> getRecentPayments() {
+    public List<InvoiceDto> getRecentPayments() {
         Long userId = authenticatedUserProvider.getCurrentUserId();
 
-        return invoiceQueryService.handle(new GetLast5Invoices(userId));
+        return invoiceQueryService.handle(new GetLast5Invoices(userId))
+                .stream()
+                .map(invoice -> new InvoiceDto(
+                        invoice.getId(),
+                        invoice.getAmount(),
+                        invoice.getCreatedAt()
+                ))
+                .toList();
     }
 
     @Override
-    public List<Appointment> getRecentAppointments() {
+    public List<AppointmentDto> getRecentAppointments() {
         Long userId = authenticatedUserProvider.getCurrentUserId();
-        return appointmentQueryService.handle(new GetTodayAppointmentsByUserIdQuery(userId));
+        return appointmentQueryService.handle(new GetTodayAppointmentsByUserIdQuery(userId))
+                .stream()
+                .map(appointment -> new AppointmentDto(
+                        appointment.getId(),
+                        appointment.getAppointmentDate(), // o el nombre correcto
+                        appointment.getReason(),
+                        appointment.getDuration(),
+                        appointment.getCreatedAt()
+                ))
+                .toList();
     }
 }
