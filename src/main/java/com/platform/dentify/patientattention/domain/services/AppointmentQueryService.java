@@ -2,10 +2,14 @@ package com.platform.dentify.patientattention.domain.services;
 
 import com.platform.dentify.patientattention.domain.model.aggregates.Appointment;
 import com.platform.dentify.patientattention.domain.model.queries.GetAllAppointmentsByPatientAndUserIdQuery;
+import com.platform.dentify.patientattention.domain.model.queries.GetAllAppointmentUserIdOrderByAppointmentDateDescQuery;
+import com.platform.dentify.patientattention.domain.model.queries.GetTodayAppointmentsByUserIdQuery;
 
 import java.util.List;
 
 public interface AppointmentQueryService {
     List<Appointment> handle(GetAllAppointmentsByPatientAndUserIdQuery query);
-    //Optional<Appointment> handle()
+    List<Appointment> handle(GetAllAppointmentUserIdOrderByAppointmentDateDescQuery query);
+    List<Appointment> handle(GetTodayAppointmentsByUserIdQuery query);
+
 }

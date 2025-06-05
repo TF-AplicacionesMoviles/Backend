@@ -4,6 +4,7 @@ import com.platform.dentify.inventory.domain.model.commands.CreateItemCommand;
 import com.platform.dentify.inventory.domain.model.commands.DeleteItemCommand;
 import com.platform.dentify.inventory.domain.model.commands.UpdateItemCommand;
 import com.platform.dentify.inventory.domain.model.queries.GetAllItemsByUserIdQuery;
+import com.platform.dentify.inventory.domain.model.queries.GetItemByIdQuery;
 import com.platform.dentify.inventory.domain.services.ItemCommandService;
 import com.platform.dentify.inventory.domain.services.ItemQueryService;
 import com.platform.dentify.inventory.interfaces.rest.dtos.CreateItemResource;
@@ -117,4 +118,22 @@ public class InventoryController {
 
         return ResponseEntity.ok(resources);
     }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get item by ID", description = "Get item by ID if it belongs to the current user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Item found"),
+            @ApiResponse(responseCode = "404", description = "Item not found")
+    })
+    public ResponseEntity<ItemResource> getItemById(@PathVariable Long id) {
+        var itemOptional = itemQueryService.handle(new GetItemByIdQuery(id));
+
+        if (itemOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        var itemResource = ItemResourceFromEntityAssembler.toResourceFromEntity(itemOptional.get());
+        return ResponseEntity.ok(itemResource);
+    }
+
 }

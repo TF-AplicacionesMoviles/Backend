@@ -36,7 +36,7 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_appointment_patient"))
     private Patient patient;
 
-    @OneToOne(mappedBy = "appointment")
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
     private Invoice invoice;
 
     public Appointment(CreateAppointmentCommand command) {
