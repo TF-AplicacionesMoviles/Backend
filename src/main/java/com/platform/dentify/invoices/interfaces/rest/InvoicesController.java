@@ -1,7 +1,9 @@
 package com.platform.dentify.invoices.interfaces.rest;
 
 
+import com.platform.dentify.invoices.domain.model.aggregates.Invoice;
 import com.platform.dentify.invoices.domain.model.commands.CreateInvoiceCommand;
+import com.platform.dentify.invoices.domain.model.queries.GetAllInvoicesByUserIdQuery;
 import com.platform.dentify.invoices.domain.model.queries.GetInvoiceByAppointmentIdQuery;
 import com.platform.dentify.invoices.domain.services.InvoiceCommandService;
 import com.platform.dentify.invoices.domain.services.InvoiceQueryService;
@@ -17,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -76,5 +80,18 @@ public class InvoicesController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("")
+    @Operation(summary = "Get all invoices for current user", description = "Returns all invoices linked to the current user")
+    public ResponseEntity<List<InvoiceResource>> getAllInvoicesForCurrentUser() {
+        List<Invoice> invoices = invoiceQueryService.handle(new GetAllInvoicesByUserIdQuery());
+
+        var resources = invoices.stream()
+                .map(InvoiceResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+
+        return ResponseEntity.ok(resources);
+    }
+
 
 }

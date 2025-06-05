@@ -1,7 +1,9 @@
 package com.platform.dentify.invoices.application.internal.queryservices;
+import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
 import com.platform.dentify.invoices.application.external.AppointmentACL;
 import com.platform.dentify.invoices.application.external.ExternalAppointmentDTO;
 import com.platform.dentify.invoices.domain.model.aggregates.Invoice;
+import com.platform.dentify.invoices.domain.model.queries.GetAllInvoicesByUserIdQuery;
 import com.platform.dentify.invoices.domain.model.queries.GetInvoiceByAppointmentIdQuery;
 import com.platform.dentify.invoices.domain.model.queries.GetLast5Invoices;
 import com.platform.dentify.invoices.domain.services.InvoiceQueryService;
@@ -15,10 +17,12 @@ import java.util.Optional;
 public class InvoiceQueryServiceImpl implements InvoiceQueryService {
     private final AppointmentACL appointmentACL;
     private final InvoiceRepository invoiceRepository;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
 
-    public InvoiceQueryServiceImpl(AppointmentACL appointmentACL, InvoiceRepository invoiceRepository) {
+    public InvoiceQueryServiceImpl(AppointmentACL appointmentACL, InvoiceRepository invoiceRepository, AuthenticatedUserProvider authenticatedUserProvider) {
         this.appointmentACL = appointmentACL;
         this.invoiceRepository = invoiceRepository;
+        this.authenticatedUserProvider = authenticatedUserProvider;
     }
 
     @Override
@@ -35,5 +39,11 @@ public class InvoiceQueryServiceImpl implements InvoiceQueryService {
 
         return invoiceRepository.findTop5ByAppointment_Patient_User_IdOrderByCreatedAtDesc(query.id());
 
+    }
+
+    @Override
+    public List<Invoice> handle(GetAllInvoicesByUserIdQuery query) {
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        return invoiceRepository.findByAppointment_Patient_User_Id(userId);
     }
 }
