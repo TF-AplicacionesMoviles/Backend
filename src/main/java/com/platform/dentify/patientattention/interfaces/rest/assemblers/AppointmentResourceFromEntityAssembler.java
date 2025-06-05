@@ -6,6 +6,8 @@ import com.platform.dentify.patientattention.interfaces.rest.dtos.AppointmentRes
 public class AppointmentResourceFromEntityAssembler {
     public static AppointmentResource toResourceFromEntity(Appointment appointment) {
         return new AppointmentResource(appointment.getId(),
+                appointment.getPatient().getName().FullName(),
+                appointment.getPatient().getDni().dni(),
                 appointment.getAppointmentDate(),
                 appointment.getReason(),
                 appointment.getCompleted(),
