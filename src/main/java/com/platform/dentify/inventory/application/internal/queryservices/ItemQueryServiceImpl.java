@@ -2,6 +2,7 @@ package com.platform.dentify.inventory.application.internal.queryservices;
 
 import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
 import com.platform.dentify.inventory.domain.model.aggregates.Item;
+import com.platform.dentify.inventory.domain.model.queries.FindTop3LowStockItemsByCurrentUser;
 import com.platform.dentify.inventory.domain.model.queries.GetAllItemsByUserIdQuery;
 import com.platform.dentify.inventory.domain.model.queries.GetItemByIdQuery;
 import com.platform.dentify.inventory.domain.services.ItemQueryService;
@@ -27,6 +28,13 @@ public class ItemQueryServiceImpl implements ItemQueryService {
     public List<Item> handle(GetAllItemsByUserIdQuery query) {
         Long userId = authenticatedUserProvider.getCurrentUserId();
         return itemRepository.findAllByUser_Id(userId);
+    }
+
+    @Override
+    public List<Item> handle(FindTop3LowStockItemsByCurrentUser query) {
+
+        return itemRepository.findTop3ByUser_IdOrderByStockQuantityAsc(query.userId());
+
     }
 
     @Override
