@@ -3,10 +3,12 @@ import com.platform.dentify.invoices.application.external.AppointmentACL;
 import com.platform.dentify.invoices.application.external.ExternalAppointmentDTO;
 import com.platform.dentify.invoices.domain.model.aggregates.Invoice;
 import com.platform.dentify.invoices.domain.model.queries.GetInvoiceByAppointmentIdQuery;
+import com.platform.dentify.invoices.domain.model.queries.GetLast5Invoices;
 import com.platform.dentify.invoices.domain.services.InvoiceQueryService;
 import com.platform.dentify.invoices.infrastructure.repositories.InvoiceRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,11 +22,18 @@ public class InvoiceQueryServiceImpl implements InvoiceQueryService {
     }
 
     @Override
-    public Optional<Invoice> findById(GetInvoiceByAppointmentIdQuery query) {
+    public Optional<Invoice> handle(GetInvoiceByAppointmentIdQuery query) {
         Long appointmentId = query.appointmentId();
 
         ExternalAppointmentDTO appointmentDTO = appointmentACL.getAppointmentById(appointmentId);
         return invoiceRepository.findInvoiceByAppointmentId(appointmentDTO.id());
+
+    }
+
+    @Override
+    public List<Invoice> handle(GetLast5Invoices query) {
+
+        return invoiceRepository.findTop5ByAppointment_Patient_User_IdOrderByCreatedAtDesc(query.id());
 
     }
 }
