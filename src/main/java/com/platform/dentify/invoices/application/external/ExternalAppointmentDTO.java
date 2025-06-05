@@ -2,7 +2,6 @@ package com.platform.dentify.invoices.application.external;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 public record ExternalAppointmentDTO(
         Long id,
@@ -11,5 +10,5 @@ public record ExternalAppointmentDTO(
         Boolean completed,
         LocalTime duration,
         Long patientId,
-        Date createdAt
+        LocalDateTime createdAt
 ) {}

@@ -65,7 +65,7 @@ public class InvoicesController {
     })
     public ResponseEntity<?> getInvoiceByAppointmentId(@PathVariable Long appointmentId) {
         try {
-            var result = invoiceQueryService.findById(new GetInvoiceByAppointmentIdQuery(appointmentId));
+            var result = invoiceQueryService.handle(new GetInvoiceByAppointmentIdQuery(appointmentId));
             if (result.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invoice not found for appointment ID: " + appointmentId);
             }
