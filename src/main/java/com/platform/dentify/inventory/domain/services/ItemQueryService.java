@@ -13,4 +13,5 @@ public interface ItemQueryService {
     List<Item> handle(GetAllItemsByUserIdQuery query);
     List<Item> handle(FindTop3LowStockItemsByCurrentUser query);
     Optional<Item> handle(GetItemByIdQuery query);
+
 }

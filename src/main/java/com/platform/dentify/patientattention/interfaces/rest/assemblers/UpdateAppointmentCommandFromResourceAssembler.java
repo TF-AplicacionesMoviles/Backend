@@ -7,9 +7,9 @@ public class UpdateAppointmentCommandFromResourceAssembler {
     public static UpdateAppointmentCommand toCommandFromResource(Long id, UpdateAppointmentResource resource) {
         return new UpdateAppointmentCommand(
                 id,
-                resource._appointmentDate(),
-                resource._reason(),
-                resource._duration()
+                resource.appointmentDate(),
+                resource.reason(),
+                resource.duration()
         );
     }
 }

@@ -39,6 +39,7 @@ public class ItemQueryServiceImpl implements ItemQueryService {
 
     @Override
     public Optional<Item> handle(GetItemByIdQuery query) {
-        return itemRepository.findById(query.id());
+        Long userId = authenticatedUserProvider.getCurrentUserId();
+        return itemRepository.findByIdAndUser_Id(query.id(), userId);
     }
 }
