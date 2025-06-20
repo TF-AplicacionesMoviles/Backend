@@ -23,7 +23,7 @@ public class JwtServiceImpl implements JwtService {
 
     private final SecretKey key;
 
-    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; // 15 mins
+    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 30; // 30 mins
     private final long REFRESH_TOKEN_EXPIRATION = 1000L * 60 * 60 * 24 * 7; // 7 días
 
     public JwtServiceImpl(@Value("${security.jwt.secret}") String secretKey) {
