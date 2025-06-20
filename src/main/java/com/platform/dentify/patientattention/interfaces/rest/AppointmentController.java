@@ -4,6 +4,7 @@ import com.platform.dentify.patientattention.domain.model.commands.CreateAppoint
 import com.platform.dentify.patientattention.domain.model.commands.DeleteAppointmentCommand;
 import com.platform.dentify.patientattention.domain.model.queries.GetAllAppointmentsByPatientAndUserIdQuery;
 import com.platform.dentify.patientattention.domain.model.queries.GetAllAppointmentUserIdOrderByAppointmentDateDescQuery;
+import com.platform.dentify.patientattention.domain.model.queries.GetAppointmentByIdQuery;
 import com.platform.dentify.patientattention.domain.services.AppointmentCommandService;
 import com.platform.dentify.patientattention.domain.services.AppointmentQueryService;
 import com.platform.dentify.patientattention.interfaces.rest.assemblers.AppointmentResourceFromEntityAssembler;
@@ -33,6 +34,22 @@ public class AppointmentController {
     public AppointmentController(AppointmentQueryService appointmentQueryService, AppointmentCommandService appointmentCommandService) {
         this.appointmentQueryService = appointmentQueryService;
         this.appointmentCommandService = appointmentCommandService;
+    }
+
+    @Operation(
+            summary = "Get appointment by id of the authenticated user",
+            description = "Returns an specific appointment"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Appointment retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No appointment found for the user")
+    })
+    @GetMapping("/appointment/{id}")
+    public ResponseEntity<AppointmentResource> getAppointmentById(@PathVariable Long id) {
+        var result = appointmentQueryService.handle(new GetAppointmentByIdQuery(id));
+        return result.map(appointment ->
+                ResponseEntity.ok(AppointmentResourceFromEntityAssembler.toResourceFromEntity(appointment))
+        ).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
