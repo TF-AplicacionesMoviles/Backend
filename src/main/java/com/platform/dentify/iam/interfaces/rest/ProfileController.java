@@ -1,6 +1,7 @@
 package com.platform.dentify.iam.interfaces.rest;
 
 
+import com.platform.dentify.iam.domain.model.queries.GetUserInformationQuery;
 import com.platform.dentify.iam.domain.services.ProfileCommandService;
 import com.platform.dentify.iam.domain.services.ProfileQueryService;
 import com.platform.dentify.iam.interfaces.rest.resources.UpdateInformationRequest;
@@ -39,7 +40,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "user not found")
     })
     public ResponseEntity<UserInfoResponse> getProfile() {
-        return ResponseEntity.ok(profileQueryService.getCurrentUserProfile());
+        return ResponseEntity.ok(profileQueryService.handle(new GetUserInformationQuery()));
     }
 
     @PutMapping("/update-information")

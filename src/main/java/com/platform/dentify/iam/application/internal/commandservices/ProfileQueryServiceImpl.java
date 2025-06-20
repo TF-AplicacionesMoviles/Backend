@@ -1,6 +1,7 @@
 package com.platform.dentify.iam.application.internal.commandservices;
 
 import com.platform.dentify.iam.domain.model.aggregates.User;
+import com.platform.dentify.iam.domain.model.queries.GetUserInformationQuery;
 import com.platform.dentify.iam.domain.services.ProfileQueryService;
 import com.platform.dentify.iam.infrastructure.repositories.UserRepository;
 import com.platform.dentify.iam.infrastructure.security.AuthenticatedUserProvider;
@@ -19,7 +20,7 @@ public class ProfileQueryServiceImpl implements ProfileQueryService {
 
 
     @Override
-    public UserInfoResponse getCurrentUserProfile() {
+    public UserInfoResponse handle(GetUserInformationQuery query) {
         Long userId = authenticatedUserProvider.getCurrentUserId();
         User user = userRepository.findById(userId).orElseThrow(()-> new IllegalStateException("User not found"));
 
