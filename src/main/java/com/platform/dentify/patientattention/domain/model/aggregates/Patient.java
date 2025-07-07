@@ -3,6 +3,7 @@ package com.platform.dentify.patientattention.domain.model.aggregates;
 import com.platform.dentify.iam.domain.model.aggregates.User;
 import com.platform.dentify.patientattention.domain.model.commands.CreatePatientCommand;
 import com.platform.dentify.patientattention.domain.model.commands.UpdatePatientCommand;
+import com.platform.dentify.patientattention.domain.model.entities.MedicalHistory;
 import com.platform.dentify.patientattention.domain.model.valueobjects.*;
 import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
@@ -44,7 +45,7 @@ public class Patient extends AuditableAbstractAggregateRoot<Patient> {
     private List<Appointment> appointments;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Appointment> medicalHistories;
+    private List<MedicalHistory> medicalHistories;
 
     public Patient() {}
 

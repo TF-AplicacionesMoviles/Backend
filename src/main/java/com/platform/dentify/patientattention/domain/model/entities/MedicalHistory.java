@@ -10,6 +10,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -29,6 +31,7 @@ public class MedicalHistory extends AuditableModel {
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_medicalhistory_patient"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Patient patient;
 
     public MedicalHistory() {
