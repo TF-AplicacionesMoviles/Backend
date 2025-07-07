@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,6 +36,7 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment>  {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_appointment_patient"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Patient patient;
 
     @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)

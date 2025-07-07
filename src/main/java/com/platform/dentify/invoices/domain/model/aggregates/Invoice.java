@@ -7,6 +7,8 @@ import com.platform.dentify.shared.domain.model.aggregates.AuditableAbstractAggr
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -18,6 +20,7 @@ public class Invoice extends AuditableAbstractAggregateRoot<Invoice> {
 
     @OneToOne
     @JoinColumn(name = "appointment_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Appointment appointment;
 
     @ManyToOne
